@@ -19,7 +19,7 @@ kubectl exec -it mysql-0 -- /bin/sh
 - No space between '-p' and 'ROOT_PASSWORD'
 
 ```
-mysql -u root -p<ROOT_PASSWORD>
+mysql -u <user> -p<ROOT_PASSWORD>
 ```
 
 
