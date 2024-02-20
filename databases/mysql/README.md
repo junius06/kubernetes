@@ -49,5 +49,9 @@ select * from <Table_Name>;
 ** 6. Show last updated block data **
 
 ```
-select * from infos.last_updated_block;
+// Not command 'use <database>;'
+select * from <database>.<table>;
+
+// excute command 'use <database>;'
+select * from <table>;
 ```
