@@ -1,0 +1,14 @@
+# DNS 엔트리를 위한 헤드리스 서비스
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-svc
+spec:
+  selector:
+    role: mysql
+  type: ClusterIP
+  clusterIP: None
+  ports:
+    - name: "mysql-svc"
+      port: 3306
+      targetPort: mysql-svc

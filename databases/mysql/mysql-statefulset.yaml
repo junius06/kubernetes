@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mysql
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      role: mysql
+  serviceName: "mysql-svc"
+  template:
+    metadata:
+      labels:
+        role: mysql
+    spec:
+      containers:
+      - name: mysql
+        image: mysql:8.0
+        ports:
+          - name: mysql-svc
+            containerPort: 3306
+            hostPort: 3306
+        env: 
+          - name: MYSQL_ALLOW_EMPTY_PASSWORD
+            value: "true"
+        volumeMounts:
+          - name: init-script
+            mountPath: /docker-entrypoint-initdb.d
+        args: 
+          - mysqld
+          - --lower_case_table_names=1  # 대소문자 구분 X
+      volumes:
+        - name: init-script
+          configMap:
+            name: init-script-configmap
