@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: redis-cluster
+spec:
+  replicas: 6
+  serviceName: redis-cluster
+  selector:
+    matchLabels:
+      role: redis-cluster
+  updateStrategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        role: redis-cluster
+    spec:
+      containers:
+        - name: redis-cluster
+          image: redis:7.2
+          ports:
+            - name: redis-client
+              containerPort: 6379
+            - name: redis-bus
+              containerPort: 16379
+          command: [ "/conf/update-node.sh", "redis-server", "/conf/redis.conf" ]
+          env:
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+          volumeMounts:
+            - name: conf
+              mountPath: /conf
+              readOnly: false
+            - name: data
+              mountPath: /data
+              readOnly: false
+      volumes: 
+        - name: conf
+          configMap:
+            name: redis-cluster
+            defaultMode: 0755
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: 2Gi
